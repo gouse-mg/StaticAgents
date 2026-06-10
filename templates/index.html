@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>S.M.A.R.T. | Malware Analysis</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/cursor.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/gridscan.css') }}">
+</head>
+<body>
+    <div id="gridscan-bg" class="gridscan"></div>
+
+    <header>
+        <h1>S.M.A.R.T.</h1>
+        <p>Static Malware Analysis & Reasoning Toolkit</p>
+    </header>
+
+    <div class="upload-card">
+        <form action="/upload" method="post" enctype="multipart/form-data"
+              style="display:flex;align-items:center;gap:16px;width:100%">
+            <input type="file" name="file" required>
+            <button type="submit" class="btn cursor-target">Start Analysis</button>
+        </form>
+    </div>
+
+    {% if run_id %}
+    <div class="layout">
+        <!-- Left: Live Timeline -->
+        <div class="panel">
+            <div class="panel-header">
+                <div style="display:flex; align-items:center; gap:10px; flex:1">
+                    <div class="dot" id="dot"></div>
+                    Live Timeline
+                </div>
+                <button id="stop-btn" class="btn cursor-target" style="padding: 4px 12px; font-size: 0.7rem; background: var(--critical); color: white; display: none">
+                    STOP ANALYSIS
+                </button>
+            </div>
+            <div class="timeline" id="timeline"></div>
+        </div>
+
+        <!-- Right: Threat Findings -->
+        <div class="panel">
+            <div class="panel-header">
+                <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
+                    <path d="M6 1L7.5 4.5H11L8.5 6.5L9.5 10L6 8L2.5 10L3.5 6.5L1 4.5H4.5L6 1Z"
+                          fill="#f59e0b"/>
+                </svg>
+                Threat Intelligence
+            </div>
+            <div class="findings-list" id="findings">
+                <div class="empty-state">
+                    <div class="icon">🔍</div>
+                    Waiting for analyst findings...
+                </div>
+            </div>
+            <div class="threat-bar">
+                <span class="threat-label">Threat level</span>
+                <div class="bar-track"><div class="bar-fill" id="bar-fill"></div></div>
+                <span class="threat-score" id="threat-score">—</span>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const runId = "{{ run_id }}";
+    </script>
+    {% endif %}
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script type="module">
+        import GridScan from "{{ url_for('static', filename='js/gridscan.js') }}";
+        window.addEventListener('DOMContentLoaded', () => {
+            const container = document.getElementById('gridscan-bg');
+            if (container) {
+                new GridScan(container, {
+                    sensitivity: 0.55,
+                    lineThickness: 1,
+                    linesColor: "#2F293A",
+                    gridScale: 0.1,
+                    scanColor: "#FF9FFC",
+                    scanOpacity: 0.4,
+                    enablePost: true,
+                    bloomIntensity: 0.6,
+                    chromaticAberration: 0.002,
+                    noiseIntensity: 0.01,
+                    enableWebcam: false, // Default to false as requested "just add background"
+                    showPreview: false
+                });
+            }
+        });
+    </script>
+    <script src="{{ url_for('static', filename='js/cursor.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/app.js') }}"></script>
+    <script>
+        window.addEventListener('DOMContentLoaded', () => {
+            new TargetCursor({
+                targetSelector: '.cursor-target',
+                spinDuration: 2
+            });
+        });
+    </script>
+</body>
+</html>

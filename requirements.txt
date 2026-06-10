@@ -1,0 +1,19 @@
+# Web Framework
+flask>=3.0.0
+werkzeug>=3.0.0
+
+# Groq LLM Client
+groq>=0.9.0
+
+# LangGraph / LangChain
+langgraph>=0.1.0
+
+# Radare2 Python Bindings
+r2pipe>=1.8.0
+
+# angr (optional — may be difficult to install on Windows natively)
+# Recommended: install in WSL2 on Windows, or run: pip install angr
+angr>=9.2.0
+
+# Environment variable management
+python-dotenv>=1.0.0
